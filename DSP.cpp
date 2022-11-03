@@ -19,9 +19,9 @@
 /* Data **********************************************************************/
 
 
-/** 
- *  A table of reference cosine wave values for comparing against. 
- *  
+/**
+ *  A table of reference cosine wave values for comparing against.
+ *
  *  Generator:
  *   COSINE_TABLE[i] = int(0x7FFF*cos(2*pi*i/COSINE_TABLE_SIZE)+0.5)
  */
@@ -62,10 +62,7 @@ const PROGMEM Q_15 COSINE_TABLE[COSINE_TABLE_SIZE] =
 };
 
 /* Functions *****************************************************************/
-//extern "C" int32_t Q15_mult ( int32_t a, int32_t b )
-//{
-//  return (a * b) >> 15;
-//}
+
 Q_15 cosine_table( BAM8 x )
 {
   return pgm_read_word(&COSINE_TABLE[x%COSINE_TABLE_SIZE]);
@@ -86,11 +83,11 @@ Q16_15 Q15_MAC( Q_15* a, Q_15* b, int16_t count)
   // Initialization of tables of constants used by CORDIC
   // need a table of arctangents of negative powers of two:
   // hex(arctan(2^(-index))*0x8000/pi+0.5)
-  
+
 //  #define CORDIC16_ITERS 16
 //  static const BAM16 arctanTable[CORDIC16_ITERS] =
 //  {
-//    0x2000, 0x12E4, 0x09FB, 0x0511, 
+//    0x2000, 0x12E4, 0x09FB, 0x0511,
 //    0x028B, 0x0146, 0x00A3, 0x0051,
 //    0x0029, 0x0014, 0x000A, 0x0005,
 //    0x0003, 0x0001, 0x0001, 0x0000,
@@ -101,7 +98,7 @@ Q16_15 Q15_MAC( Q_15* a, Q_15* b, int16_t count)
 //  #define CORDIC16_ITERS 20
 //  static const int32_t arctanTable[CORDIC16_ITERS] =
 //  {
-//    0x20000000, 0x12E4051E, 0x09FB385B, 0x051111D4, 
+//    0x20000000, 0x12E4051E, 0x09FB385B, 0x051111D4,
 //    0x028B0D43, 0x0145D7E1, 0x00A2F61E, 0x00517C55,
 //    0x0028BE53, 0x00145F2F, 0x000A2F98, 0x000517CC,
 //    0x00028BE6, 0x000145F3, 0x0000A2FA, 0x0000517D,
@@ -113,7 +110,7 @@ Q16_15 Q15_MAC( Q_15* a, Q_15* b, int16_t count)
   #define CORDIC16_ITERS 16
   static const uint16_t arctanTable[CORDIC16_ITERS] =
   {
-    0x8000, 0x4B90, 0x27ED, 0x1444, 
+    0x8000, 0x4B90, 0x27ED, 0x1444,
     0x0A2C, 0x0517, 0x028C, 0x0146,
     0x00A3, 0x0051, 0x0029, 0x0014,
     0x000A, 0x0005, 0x0003, 0x0001,
@@ -132,20 +129,20 @@ extern "C" Complex16 CORDIC16_rotate( BAM16 angle, Complex16 vector )
   // K[k] = hex(K[k] +0.5)
 //  static const Q_15 K[N] =
 //  {
-//    0x5a82, 0x50F4, 0x4E8A, 0x4DEE, 
-//    0x4DC7, 0x4DBE, 0x4DBB, 0x4DBB, 
+//    0x5a82, 0x50F4, 0x4E8A, 0x4DEE,
+//    0x4DC7, 0x4DBE, 0x4DBB, 0x4DBB,
 //    0x4DBB, 0x4DBA, 0x4DBA, 0x4DBA,
 //    0x4DBA, 0x4DBA, 0x4DBA, 0x4DBA,
 //  };
   // As long as N > ~14 0x4DBA76D4 is a great Q_31 approximation
 
-  
+
   //int32_t vsin = 0;
   //int32_t vcos = 0x4DB9DB5F; // K[N-1] * 0x7FFF * 2^16
-  
+
   int32_t y = (int32_t)vector.y*0x04DBA; // *K[N-1] * 2^15
   int32_t x = (int32_t)vector.x*0x04DBA; // *K[N-1] * 2^15
-  
+
   // Use Symmetry to get angle in quadrant 1 or 4.
   if( BAM16_Quad23(angle) )
   {
@@ -155,7 +152,7 @@ extern "C" Complex16 CORDIC16_rotate( BAM16 angle, Complex16 vector )
   }
 
   uint32_t angle32 = (uint32_t)angle << 16;
-    
+
   for(int i=0; i<CORDIC16_ITERS; ++i)
   {
     // Check if angle is in Quadrant 3 or 4
@@ -182,14 +179,14 @@ extern "C" Complex16 CORDIC16_rotate( BAM16 angle, Complex16 vector )
   x=constrain(x,-Q15_ONE, Q15_ONE);
   y=(y+0x4000) >> 15;
   y=constrain(y,-Q15_ONE, Q15_ONE);
-  
+
   return { (Q_15)x , (Q_15)y};
 
 }
 
 extern "C" Complex16 CORDIC16_polar2rect( Polar16 vector )
 {
-  return CORDIC16_rotate(vector.phase, {vector.mag, 0}); 
+  return CORDIC16_rotate(vector.phase, {vector.mag, 0});
 }
 
 extern "C" Polar16 CORDIC16_rect2polar( Complex16 vector )
@@ -200,7 +197,7 @@ extern "C" Polar16 CORDIC16_rect2polar( Complex16 vector )
   int32_t y = (int32_t)vector.y*0x04DBA; // *K[N-1] * 2^15
   int32_t x = (int32_t)vector.x*0x04DBA; // *K[N-1] * 2^15
   uint32_t angle32 = 0;
-  
+
   // Use Symmetry to get angle in quadrant 1 or 4.
   if( x < 0 )
   {
@@ -265,7 +262,7 @@ Q16_15 powerMeasurement_magnitude( const Q_15* src, BAM16 freq, int N)
   }
   sumI = (sumI + (1 << 6)) >> 7;
   sumQ = (sumQ + (1 << 6)) >> 7;
-  return sqrt(sumQ*sumQ + sumI*sumI);  
+  return sqrt(sumQ*sumQ + sumI*sumI);
 }
 
 
@@ -302,13 +299,13 @@ void FFT_magnitude( Q_15* dst, const Q_15* src, int order )
   FFT_inphase(qData, src, order, BAM16toBAM8(BAM16_90_DEGREES)); // FFT needs negative sin so use +pi/2
   for( int i = 0 ; i<N; ++i)
   {
-    // Convert to Polar to calculate manitude of hypotenuse
+    // Convert to Polar to calculate magnitude of hypotenuse
     pol=CORDIC16_rect2polar({dst[i],qData[i]});
-    dst[i]=pol.mag;        
+    dst[i]=pol.mag;
   }
 }
 
-void IFFT_magnitude( Q_15* dst, const Q_15* src, int order )
+void IFT_magnitude( Q_15* dst, const Q_15* src, int order )
 {
   const int N=1<<order;
   Polar16 pol;
@@ -317,9 +314,9 @@ void IFFT_magnitude( Q_15* dst, const Q_15* src, int order )
   FFT_inphase(qData, src, order, BAM16toBAM8(BAM16_270_DEGREES)); // IFFT needs sin so use -pi/2
   for( int i = 0 ; i<N; ++i)
   {
-    // Convert to Polar to calculate manitude of hypotenuse
+    // Convert to Polar to calculate magnitude of hypotenuse
     pol=CORDIC16_rect2polar({dst[i],qData[i]});
-    dst[i]=pol.mag;        
+    dst[i]=pol.mag;
   }
 }
 

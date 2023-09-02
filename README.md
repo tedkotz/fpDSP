@@ -7,6 +7,7 @@ The PlusCLI project has some sample test commands to play with this.
 - https://en.wikipedia.org/wiki/CORDIC
 - https://en.wikipedia.org/wiki/Binary_angular_measurement
 - [Reducible's FFT video](https://www.youtube.com/watch?v=h7apO7q16V0)
+- https://en.wikipedia.org/wiki/WAV
 
 
 ### Features/TODO
@@ -26,5 +27,5 @@ The PlusCLI project has some sample test commands to play with this.
         - Not too high to keep processing load down
         - Cover telephone audio range (300Hz-3.4kHz)
             - Covers human voice and classic modem experiments
-        - 6000, 6300, 7350, 8000, 8820
+        - 6000, 6300, 7350, 8000, 8820, 11025
 
